@@ -1,0 +1,11 @@
+---
+import { profile } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner mono">
+    <span>© {year} {profile.name} · Built with Astro</span>
+    <a href="#top" onclick="window.scrollTo({ top: 0 }); return false;">Back to top ↑</a>
+  </div>
+</footer>

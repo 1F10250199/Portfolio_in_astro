@@ -1,0 +1,15 @@
+---
+import { profile } from '../data/site';
+---
+
+<section class="section contact" id="contact">
+  <div class="container">
+    <h2 class="contact__title reveal">Let's make something <em>fun</em> <span class="squiggle">together.</span></h2>
+
+    <ul class="socials">
+      {profile.socials.map((s) => (
+        <li><a href={s.href} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>
+      ))}
+    </ul>
+  </div>
+</section>

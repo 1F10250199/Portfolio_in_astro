@@ -1,0 +1,42 @@
+// ここを書き換えるだけで中身が差し替わります
+
+export const profile = {
+  name: 'hamutaro',
+  nameJa: 'はむたろ',
+  // ヒーローで順番に切り替わる肩書き
+  roles: ['Frontend Developer', 'UI Designer', 'Tinkerer', 'Coffee Enjoyer'],
+  tagline: 'シンプルなものを、ちょっとだけ楽しく作っています。',
+  location: 'Tokyo, Japan',
+  email: 'hello@example.com',
+  about: [
+    'Webフロントエンドを中心に、デザインから実装までを手がけています。',
+    '使う人が「お、」と小さく反応するくらいの遊び心が好きです。',
+  ],
+  socials: [
+    { label: 'GitHub', href: 'https://github.com/hamutaro-46' },
+  ],
+};
+
+export const skills = [
+  'Astro', 'TypeScript', 'React', 'CSS', 'Figma', 'Node.js', 'Accessibility', 'Motion',
+];
+
+export type Accent = 'blue' | 'green';
+
+export type Work = {
+  slug: string;
+  title: string;
+  year: string;
+  summary: string;
+  description: string[];
+  tags: string[];
+  accent: Accent;
+  // 表示用の絵文字 or 記号（画像を使う場合は image にパスを入れる）
+  glyph: string;
+  image?: string;
+  link?: string;
+};
+
+export const works: Work[] = [
+
+];

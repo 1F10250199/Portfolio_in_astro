@@ -1,0 +1,240 @@
+---
+// ちょっとした遊び心まとめ。どれも要素がなければ何もしません。
+// （以前の src/scripts/playful.js をこのコンポーネントに移しました）
+---
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
+
+  /* ---------- テーマ切り替え ---------- */
+  type Theme = 'light' | 'dark';
+
+  function resolvedTheme(): Theme {
+    const set = root.getAttribute('data-theme');
+    if (set === 'light' || set === 'dark') return set;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function syncTheme() {
+    const t = resolvedTheme();
+    root.setAttribute('data-theme-resolved', t);
+    document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(t === 'dark'));
+    });
+  }
+
+  function initTheme() {
+    syncTheme();
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme);
+    document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next: Theme = resolvedTheme() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try {
+          localStorage.setItem('theme', next);
+        } catch (_) {}
+        syncTheme();
+      });
+    });
+  }
+
+  /* ---------- ヘッダーの下線 ---------- */
+  function initHeader() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  /* ---------- 肩書きのタイピング ---------- */
+  function initTyped() {
+    const el = document.querySelector<HTMLElement>('[data-typed]');
+    if (!el) return;
+    let roles: string[] = [];
+    try {
+      roles = JSON.parse(el.getAttribute('data-typed') || '[]');
+    } catch (_) {}
+    if (roles.length < 2 || reduceMotion) return;
+
+    let i = 0;
+    let text = roles[0];
+    let deleting = true;
+    const tick = () => {
+      if (deleting) {
+        text = text.slice(0, -1);
+        if (text.length === 0) {
+          deleting = false;
+          i = (i + 1) % roles.length;
+        }
+        el.textContent = text;
+        setTimeout(tick, 45);
+      } else {
+        const target = roles[i];
+        text = target.slice(0, text.length + 1);
+        el.textContent = text;
+        if (text === target) {
+          deleting = true;
+          setTimeout(tick, 2200);
+        } else {
+          setTimeout(tick, 85);
+        }
+      }
+    };
+    setTimeout(tick, 2200);
+  }
+
+  /* ---------- マウス追従ドット ---------- */
+  function initCursor() {
+    if (reduceMotion || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const dot = document.createElement('div');
+    dot.className = 'cursor-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(dot);
+
+    let x = -100;
+    let y = -100;
+    let cx = x;
+    let cy = y;
+    window.addEventListener('pointermove', (e) => {
+      x = e.clientX;
+      y = e.clientY;
+      dot.classList.add('is-visible');
+      const interactive = e.target instanceof Element && e.target.closest('a, button');
+      dot.classList.toggle('is-hover', Boolean(interactive));
+    });
+    document.addEventListener('pointerleave', () => dot.classList.remove('is-visible'));
+
+    const loop = () => {
+      cx += (x - cx) * 0.2;
+      cy += (y - cy) * 0.2;
+      dot.style.transform = `translate(${cx}px, ${cy}px)`;
+      requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  /* ---------- ヒーロー図形がマウスに少し反応 ---------- */
+  function initShapes() {
+    const shapes = document.querySelectorAll<HTMLElement>('[data-depth]');
+    if (!shapes.length || reduceMotion) return;
+    window.addEventListener('pointermove', (e) => {
+      const dx = e.clientX / window.innerWidth - 0.5;
+      const dy = e.clientY / window.innerHeight - 0.5;
+      shapes.forEach((s) => {
+        const d = Number(s.getAttribute('data-depth')) || 10;
+        s.style.transform = `translate(${dx * d}px, ${dy * d}px)`;
+      });
+    });
+  }
+
+  /* ---------- ロゴのドットを押すと紙吹雪 ---------- */
+  function confetti(x: number, y: number) {
+    if (reduceMotion) return;
+    const colors = ['var(--blue)', 'var(--green)', 'var(--fg)'];
+    for (let n = 0; n < 28; n++) {
+      const p = document.createElement('span');
+      p.className = 'confetti';
+      p.style.left = `${x}px`;
+      p.style.top = `${y}px`;
+      p.style.background = colors[n % colors.length];
+      p.style.borderRadius = n % 2 ? '50%' : '2px';
+      document.body.appendChild(p);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 60 + Math.random() * 120;
+      const anim = p.animate(
+        [
+          { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+          {
+            transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist + 80}px) rotate(${Math.random() * 540}deg)`,
+            opacity: 0,
+          },
+        ],
+        { duration: 900 + Math.random() * 500, easing: 'cubic-bezier(.2,.8,.3,1)' },
+      );
+      anim.onfinish = () => p.remove();
+    }
+  }
+
+  function initConfetti() {
+    document.querySelectorAll('[data-confetti]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        const r = el.getBoundingClientRect();
+        confetti(r.left + r.width / 2, r.top + r.height / 2);
+        e.preventDefault();
+      });
+    });
+  }
+
+  /* ---------- メールアドレスをコピー ---------- */
+  let toastTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function toast(message: string) {
+    let t = document.querySelector<HTMLElement>('.toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.className = 'toast';
+      t.setAttribute('role', 'status');
+      document.body.appendChild(t);
+    }
+    const el = t;
+    el.textContent = message;
+    el.classList.add('is-shown');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('is-shown'), 1800);
+  }
+
+  function initCopy() {
+    document.querySelectorAll('[data-copy]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const value = btn.getAttribute('data-copy') || '';
+        try {
+          await navigator.clipboard.writeText(value);
+          toast('Copied! ✓');
+        } catch (_) {
+          toast(value);
+        }
+        const r = btn.getBoundingClientRect();
+        confetti(r.left + r.width / 2, r.top);
+      });
+    });
+  }
+
+  /* ---------- スクロールでふわっと表示 ---------- */
+  function initReveal() {
+    const els = document.querySelectorAll<HTMLElement>('.reveal');
+    root.classList.add('js-reveal');
+    if (!('IntersectionObserver' in window) || reduceMotion) {
+      els.forEach((el) => el.classList.add('is-in'));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in');
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    els.forEach((el, i) => {
+      el.style.transitionDelay = `${(i % 4) * 70}ms`;
+      io.observe(el);
+    });
+  }
+
+  initTheme();
+  initHeader();
+  initTyped();
+  initCursor();
+  initShapes();
+  initConfetti();
+  initCopy();
+  initReveal();
+
+  // コンソールを開いた人へのおまけ
+  console.log('%c●● Hi there! 見つけてくれてありがとう。', 'color:#2d5bff;font-weight:bold;font-size:14px');
+</script>

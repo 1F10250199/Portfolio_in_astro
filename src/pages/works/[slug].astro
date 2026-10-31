@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { works, type Work } from '../../data/site';
+
+export function getStaticPaths() {
+  return works.map((work) => ({ params: { slug: work.slug }, props: { work } }));
+}
+
+interface Props {
+  work: Work;
+}
+
+const { work } = Astro.props;
+const index = works.findIndex((w) => w.slug === work.slug);
+const next = works[(index + 1) % works.length];
+---
+
+<BaseLayout title={work.title} description={work.summary}>
+  <article class="detail">
+    <div class="container">
+      <a class="detail__back mono" href="/#works">← Back to works</a>
+      <h1 class="detail__title">{work.title}<span style="color:var(--green)">.</span></h1>
+      <div class="detail__meta mono">
+        <span>{work.year}</span>
+        <span>·</span>
+        <span>{work.tags.join(' / ')}</span>
+      </div>
+
+      <div class="work-card__thumb detail__hero" data-accent={work.accent}
+        style={`--accent: var(--${work.accent}); --accent-soft: var(--${work.accent}-soft); border: 1.5px solid var(--fg); aspect-ratio: 21 / 9;`}>
+        {work.image ? <img src={work.image} alt="" /> : <span class="work-card__glyph" aria-hidden="true">{work.glyph}</span>}
+      </div>
+
+      <div class="detail__body">
+        {work.description.map((p) => <p>{p}</p>)}
+        {work.link && (
+          <p><a class="btn" href={work.link} target="_blank" rel="noopener noreferrer">サイトを見る <span class="btn__arrow">↗</span></a></p>
+        )}
+      </div>
+
+      <p style="margin-top:64px">
+        <a class="btn btn--ghost" href={`/works/${next.slug}/`}>Next: {next.title} <span class="btn__arrow">→</span></a>
+      </p>
+    </div>
+  </article>
+</BaseLayout>

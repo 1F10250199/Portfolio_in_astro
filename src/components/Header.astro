@@ -1,0 +1,23 @@
+---
+import { profile } from '../data/site';
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <div class="logo">
+      <button class="logo__dots" type="button" data-confetti aria-label="ぽちっと押してみて">
+        <span></span><span></span>
+      </button>
+      <a href="/" style="text-decoration:none">{profile.name}</a>
+    </div>
+
+    <nav class="nav" aria-label="メイン">
+      <a href="/#works">Works</a>
+      <a href="/#about" class="nav__optional">About</a>
+      <a href="/#contact">Contact</a>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="ダークモード切り替え" aria-pressed="false">
+        <span class="theme-toggle__knob"></span>
+      </button>
+    </nav>
+  </div>
+</header>

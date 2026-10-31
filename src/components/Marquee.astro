@@ -1,0 +1,13 @@
+---
+import { skills } from '../data/site';
+// 継ぎ目なくループさせるため2周分並べる
+const items = [...skills, ...skills];
+---
+
+<div class="marquee" aria-label={`スキル: ${skills.join(', ')}`}>
+  <div class="marquee__track" aria-hidden="true">
+    {items.map((s) => (
+      <span class="marquee__item">{s}<span class="marquee__star">✳</span></span>
+    ))}
+  </div>
+</div>
