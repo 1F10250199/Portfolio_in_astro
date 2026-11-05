@@ -7,18 +7,18 @@ export const profile = {
   roles: ['Frontend Developer', 'UI Designer', 'Tinkerer', 'Coffee Enjoyer'],
   tagline: 'シンプルなものを、ちょっとだけ楽しく作っています。',
   location: 'Tokyo, Japan',
-  email: 'hello@example.com',
+  email: 'linghuzhongcun294@gmail.com',
   about: [
     'Webフロントエンドを中心に、デザインから実装までを手がけています。',
     '使う人が「お、」と小さく反応するくらいの遊び心が好きです。',
   ],
   socials: [
-    { label: 'GitHub', href: 'https://github.com/hamutaro-46' },
+    { label: 'GitHub', href: 'https://github.com/1F10250199' },
   ],
 };
 
 export const skills = [
-  'Astro', 'TypeScript', 'React', 'CSS', 'Figma', 'Node.js', 'Accessibility', 'Motion',
+  'Astro', 'TypeScript', 'React', 'CSS', 'Figma', 'Node.js', 'Python', 'C言語'
 ];
 
 export type Accent = 'blue' | 'green';
