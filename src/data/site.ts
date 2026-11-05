@@ -4,10 +4,9 @@ export const profile = {
   name: 'hamutaro',
   nameJa: 'はむたろ',
   // ヒーローで順番に切り替わる肩書き
-  roles: ['Frontend Developer', 'UI Designer', 'Tinkerer', 'Coffee Enjoyer'],
+  roles: ['Frontend Developer', 'UI Designer', 'Tinkerer', 'tea lover'],
   tagline: 'シンプルなものを、ちょっとだけ楽しく作っています。',
   location: 'Tokyo, Japan',
-  email: 'linghuzhongcun294@gmail.com',
   about: [
     'Webフロントエンドを中心に、デザインから実装までを手がけています。',
     '使う人が「お、」と小さく反応するくらいの遊び心が好きです。',
@@ -18,7 +17,7 @@ export const profile = {
 };
 
 export const skills = [
-  'Astro', 'TypeScript', 'React', 'CSS', 'Figma', 'Node.js', 'Python', 'C言語'
+  'Python', 'TypeScript', 'Ruby', 'C言語', 'CSS', 'Node.js', 'Astro', 'React', 'Tinkercad', 'Figma'
 ];
 
 export type Accent = 'blue' | 'green';
