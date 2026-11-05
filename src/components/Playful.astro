@@ -1,6 +1,5 @@
 ---
-// ちょっとした遊び心まとめ。どれも要素がなければ何もしません。
-// （以前の src/scripts/playful.js をこのコンポーネントに移しました）
+
 ---
 
 <script>
@@ -83,36 +82,6 @@
       }
     };
     setTimeout(tick, 2200);
-  }
-
-  /* ---------- マウス追従ドット ---------- */
-  function initCursor() {
-    if (reduceMotion || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    const dot = document.createElement('div');
-    dot.className = 'cursor-dot';
-    dot.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(dot);
-
-    let x = -100;
-    let y = -100;
-    let cx = x;
-    let cy = y;
-    window.addEventListener('pointermove', (e) => {
-      x = e.clientX;
-      y = e.clientY;
-      dot.classList.add('is-visible');
-      const interactive = e.target instanceof Element && e.target.closest('a, button');
-      dot.classList.toggle('is-hover', Boolean(interactive));
-    });
-    document.addEventListener('pointerleave', () => dot.classList.remove('is-visible'));
-
-    const loop = () => {
-      cx += (x - cx) * 0.2;
-      cy += (y - cy) * 0.2;
-      dot.style.transform = `translate(${cx}px, ${cy}px)`;
-      requestAnimationFrame(loop);
-    };
-    loop();
   }
 
   /* ---------- ヒーロー図形がマウスに少し反応 ---------- */
@@ -229,7 +198,6 @@
   initTheme();
   initHeader();
   initTyped();
-  initCursor();
   initShapes();
   initConfetti();
   initCopy();
